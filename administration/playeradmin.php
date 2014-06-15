@@ -1016,6 +1016,9 @@ function do_update_article($db,$id)
 	global $content,$sessuseri, $sessemail, $sessfname, $sesslname, $sessplyid, $pagecontainerstart, $pagecontainerend;
 	
 	$plid = $_GET['id'];
+	$SID = $_GET['SID'];
+	$action = $_GET['action'];	
+	$id = $_POST['id'];	
 	
 	// make sure info is present and correct
 
@@ -1125,11 +1128,11 @@ function do_update_article($db,$id)
 		INSERT INTO events (event_userid, event_date, event_type, event_module, event_objectid, event_associatedid, event_text) 
 		VALUES ($sessuseri,NOW(),'2','18','$plid', NULL, '$sessfname $sesslname updated player profile ''$pfn $pln''.')");
 
-		echo "</div></div></div></div></article><div class=\"msg-alerting\"><div class=\"msg-ok\">Your profile was successfully updated $pfn.\n";
-		echo "&nbsp;<a href=\"main.php?SID=" . $_GET['SID'] . "&action=" . $_GET['action'] . "&do=sedit&id=$plid\">Edit again</a> or return <a href=\"main.php?SID=" . $_GET['SID'] . "\">home</a>?</div></div>\n";
+		echo "</div></div></div></div></article><div class=\"msg-alerting\"><div class=\"msg-ok\"><b>$pfn $pln</b> was successfully updated.\n";
+		echo "&nbsp;<a href=\"main.php?SID=$SID&action=$action\">Player list</a> | <a href=\"main.php?SID=$SID&action=$action&do=sedit&id=$id\">Update more</a></div></div>\n";
 		echo "</div></div></section>\n";
 	} else {
-	echo "<div class=\"msg-alerting\"><div class=\"msg-error\">Sorry. Something went wrong with updating your profile.\n";
+	echo "<div class=\"msg-alerting\"><div class=\"msg-error\">Sorry. Something went wrong with updating that profile.\n";
 	echo "&nbsp;<a href=\"main.php?SID=$SID&action=" . $_GET['action'] . "&do=sedit&id=$sessplyid\">Try again</a>?</div></div>\n";
 	}		
 	
