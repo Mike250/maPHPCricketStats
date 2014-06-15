@@ -59,6 +59,7 @@ $jscript = "";
 
 				if($_GET['cancel'] == "changepassword") $cancelr = 'changing your password';
 				if($_GET['cancel'] == "myplayeradmin") $cancelr = 'updating your player profile';
+				if($_GET['cancel'] == "playeradmin") $cancelr = 'updating that player profile';
 				if($_GET['cancel'] == "websiteadmin") $cancelr = 'updating the website settings';
 				if($_GET['cancel'] == "useradmin") $cancelr = 'updating the users table';
 				if($_GET['cancel'] == "newsadmin") $cancelr = 'updating the news table';

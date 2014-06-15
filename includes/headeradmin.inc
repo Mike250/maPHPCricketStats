@@ -187,7 +187,8 @@ $(window).load(function() {
                                         	if(
                                         		$_GET['action'] == "clubadmin" || 
                                         		$_GET['action'] == "teamadmin" ||
-                                        		$_GET['action'] == "groundadmin" 
+                                        		$_GET['action'] == "groundadmin"  || 
+                                        		$_GET['action'] == "playeradmin" 
                                         	) 
                                         	{ $activeclass = " active"; 
                                         	} else { $activeclass = ""; } 
@@ -196,7 +197,8 @@ $(window).load(function() {
                                             <ul class="submenu">
                                             	<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=clubadmin">Clubs Administration</a></li>
 																							<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=teamadmin">Teams Administration</a></li>																							
-																							<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=groundadmin">Grounds Administration</a></li>																							
+																							<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=groundadmin">Grounds Administration</a></li>
+																							<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=playeradmin">Players Administration</a></li>
                                             </ul>
                                         </li>                                        
                                         <?php 

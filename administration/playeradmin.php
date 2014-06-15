@@ -537,7 +537,7 @@ function edit_category_form($db,$id)
 		
 		<div class="block">
 		<label>&nbsp;</label>
-			<a href="main.php?SID=<?=$SID?>&cancel=myplayeradmin" class="btn btn-secondary">Cancel</a>&nbsp;<a href="javascript:" onclick="document.getElementById('cricket-form').submit();" class="btn btn-primary">Submit</a>
+			<a href="main.php?SID=<?=$SID?>&cancel=playeradmin" class="btn btn-secondary">Cancel</a>&nbsp;<a href="javascript:" onclick="document.getElementById('cricket-form').submit();" class="btn btn-primary">Submit</a>
 		</div>
 
 	</div>
@@ -662,7 +662,7 @@ function do_update_category($db,$id)
 	
 	$db->Insert("
 		INSERT INTO events (event_userid, event_date, event_type, event_module, event_objectid, event_associatedid, event_text) 
-		VALUES ($sessuseri,NOW(),'2','3','$plid', NULL, '$sessfname $sesslname updated their player profile ''$pfn $pln''.')");
+		VALUES ($sessuseri,NOW(),'2','18','$plid', NULL, '$sessfname $sesslname updated player profile ''$pfn $pln''.')");
 
 		echo "</div></div></div></div></article><div class=\"msg-alerting\"><div class=\"msg-ok\">Your profile was successfully updated $pfn.\n";
 		echo "&nbsp;<a href=\"main.php?SID=" . $_GET['SID'] . "&action=" . $_GET['action'] . "&do=sedit&id=$plid\">Edit again</a> or return <a href=\"main.php?SID=" . $_GET['SID'] . "\">home</a>?</div></div>\n";
