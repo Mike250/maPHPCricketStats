@@ -1,0 +1,315 @@
+/* Global CSS class */
+
+
+/* Force scrollbar - prevent "centering jumps" when navigating */
+
+html { overflow-y: scroll; }
+
+/*---------------------------------------------------------------
+  GLOBAL OVERRIDES
+---------------------------------------------------------------*/
+
+.forceunderline { text-decoration: underline; }
+
+.isactive { color: #158B28; }
+.isinactive { color: #F00; }
+
+/*---------------------------------------------------------------
+  MESSAGE BOXES
+---------------------------------------------------------------*/
+
+.msg-alerting {
+    margin-top: -2px;
+    padding-bottom: 20px;
+}
+
+.msg-error a:link {
+text-decoration:underline;
+color:#900
+}
+
+.msg-error a:hover {
+text-decoration:underline;
+color:#000
+}
+
+.msg-error {
+background:url("/images/icons/msg-error.png") no-repeat scroll 6px center #F4B8B5;
+border:1px solid #C94042;
+color:#900
+}
+
+.msg-ok {
+background:url("/images/icons/msg-ok.png") no-repeat scroll 6px center #AEE893;
+border:1px solid #8EC46C;
+color:#060
+}
+
+.msg-info {
+background:url("/images/icons/msg-info.png") no-repeat scroll 6px center #ADC2F7;
+border:1px solid #6D94F7;
+color:#03C
+}
+
+.msg-atten {
+background:url("/images/icons/msg-atten.png") no-repeat scroll 6px center #FAE673;
+border:1px solid #FEBD63;
+color:#C60
+}
+
+.msg-info,.msg-atten,.msg-ok,.msg-error {
+margin:3px 0;
+padding: 20px 10px 20px 40px;
+font: 600 17px/23px 'Open Sans', Open Sans, Arial, Helvetica, sans-serif;
+}
+
+/*---------------------------------------------------------------
+  RESULT TABLES 
+---------------------------------------------------------------*/
+
+.magrid table { 
+	border-collapse: collapse; 
+	text-align: left; 
+	width: 100%; 
+	margin-top: 10px;
+} 
+.magrid {
+	font: normal 12px/150% Arial, Helvetica, sans-serif; 
+	background: #fff; overflow: hidden; 
+	/*-webkit-border-radius: 2px; */
+	/*-moz-border-radius: 2px; */
+	/*border-radius: 2px; */
+}
+.magrid table td, .magrid table th { 
+	padding: 14px 14px; 
+}
+.magrid table td.nopadding, .magrid table th.nopadding{ 
+	padding: 2px 2px; 
+}
+.magrid table thead th {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #484848), color-stop(1, #333333) );
+	background:-moz-linear-gradient( center top, #484848 5%, #333333 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#484848', endColorstr='#333333');
+	background-color:#484848; color:#FFFFFF; 
+	font-size: 14px; 
+	font-weight: bold; 
+} 
+.magrid table thead th:first-child { 
+	border: none; 
+}
+.magrid table tbody tr.adminrow1 {
+	background: #fff;
+}
+.magrid table tbody tr.adminrow2 {
+	background: #f8f8f8;
+}
+.magrid table tbody td { 
+	color: #4F4F4F; 
+	font-size: 13px;
+	border-bottom: 1px solid #E6E6E6;
+	font-weight: normal; 
+}
+.magrid table tbody .alt td { 
+	background: #F4F4F4; 
+	color: #4F4F4F; 
+}
+.magrid table tbody td:first-child { 
+	border-left: none; 
+}
+.magrid table tbody tr:last-child td { 
+	border-bottom: none; 
+}
+.magrid table tfoot td div { 
+	border-top: 1px solid #484848;
+	background: #FFFFFF;
+} 
+.magrid table tfoot td { 
+	padding: 0; 
+	font-size: 12px; 
+} 
+.magrid table tfoot td div { 
+	padding: 2px; 
+	margin-right: -3px;
+}
+.magrid table tfoot td ul { 
+	margin: 0; 
+	padding:0; 
+	list-style: none; 
+	text-align: right; 
+}
+.magrid table tfoot  li { 
+	display: inline; 
+	height: 25px;
+	padding: 2px 0 0 2px;
+}
+.magrid table tfoot li a { 
+	text-decoration: none; 
+	display: inline-block;  
+	padding: 2px 8px; 
+	margin: 1px;
+	color: #FFFFFF;
+	border: 1px solid #484848;
+	-webkit-border-radius: 2px; 
+	-moz-border-radius: 2px; 
+	border-radius: 2px; 
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #484848), color-stop(1, #333333) );
+	background:-moz-linear-gradient( center top, #484848 5%, #333333 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#484848', endColorstr='#333333');background-color:#484848; 
+}
+.magrid .current table tfoot li a { 
+	text-decoration: none; 
+	display: inline-block;  
+	padding: 2px 8px; 
+	margin: 1px;
+	color: #FFFFFF;
+	border: 1px solid #014828;
+	-webkit-border-radius: 2px; 
+	-moz-border-radius: 2px; 
+	border-radius: 2px; 
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #014828), color-stop(1, #014828) );
+	background:-moz-linear-gradient( center top, #484848 5%, #014828 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#014828', endColorstr='#014828');background-color:#014828; 
+}
+.magrid table tfoot ul.active, .magrid table tfoot ul a:hover { 
+	text-decoration: none;
+	border-color: #333333; 
+	color: #FFFFFF; 
+	background: none; 
+	background-color:#484848;
+}
+.lastcolumn {
+	text-align: right;
+} 
+
+div.dhtmlx_window_active, div.dhx_modal_cover_dv { 
+	position: fixed !important; 
+}
+
+/*---------------------------------------------------------------
+  COLUMN CLASSES
+---------------------------------------------------------------*/
+
+.five-sixths,
+.four-fifths,
+.four-sixths,
+.one-fifth,
+.one-fourth,
+.one-half,
+.one-sixth,
+.one-third,
+.three-fifths,
+.three-fourths,
+.three-sixths,
+.two-fifths,
+.two-fourths,
+.two-sixths,
+.two-thirds {
+	float: left;
+	margin-left: 4.166666666%; /* 48px / 1152px */
+}
+
+.one-half,
+.three-sixths,
+.two-fourths {
+	width: 47.9166666666%; /* 552px / 1152px */
+}
+
+.one-third,
+.two-sixths {
+	width: 30.555555555%; /* 352px / 1152px */
+}
+
+.four-sixths,
+.two-thirds {
+	width: 65.277777777%; /* 752px / 1152px */
+}
+
+.one-fourth {
+	width: 21.875%; /* 252px / 1152px */
+}
+
+.three-fourths {
+	width: 73.958333333%; /* 852px / 1152px */
+}
+
+.one-fifth {
+	width: 16.666666666%; /* 192px / 1152px */
+}
+
+.two-fifths {
+	width: 37.5%; /* 432px / 1152px */
+}
+
+.three-fifths {
+	width: 58.333333333%; /* 672px / 1152px */
+}
+
+.four-fifths {
+	width: 79.166666666%; /* 912px / 1152px */
+}
+
+.one-sixth {
+	width: 13.194444444%; /* 152px / 1152px */
+}
+
+.five-sixths {
+	width: 82.638888888%; /* 952px / 1152px */
+}
+
+.first {
+	margin-left: 0;
+}
+
+/*---------------------------------------------------------------
+  PHOTO AND AVATAR CLASSES
+---------------------------------------------------------------*/
+
+.portraitbg {
+	width: 150px; 
+	border: 10px solid #f3f3f3;
+}
+
+/*---------------------------------------------------------------
+  AJAX ADMIN SEARCH CLASSES
+---------------------------------------------------------------*/
+
+.content{
+	width:100%;
+	margin:0 auto;
+}
+#searchid
+{
+	width:250px;
+	border:solid 1px #000;
+	padding:10px;
+	font: 14px Open Sans, Arial, Helvetica, sans-serif;
+}
+#result
+{
+	position:absolute;
+	margin-left: 160px;
+	width:300px;
+	padding:5px;
+	display:none;
+	margin-top:-10px;
+	border-top:0px;
+	overflow:hidden;
+	border:1px #CCC solid;
+	background-color: #f8f8f8;
+	z-index: 1;
+}
+.show
+{
+	padding:10px; 
+	border-bottom:1px #cecece dashed;
+}
+.show:hover
+{
+	background:#014828;
+	color:#FFF;
+	cursor:pointer;
+}
+.showdate {
+	font: 11px Open Sans, Arial, Helvetica, sans-serif;
+	font-style:italic;
+}

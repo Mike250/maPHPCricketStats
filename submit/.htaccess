@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Restricted access"
+AuthUserFile /home/content/b/u/t/butchercricket/html/submit/.htpasswd
+require valid-user
