@@ -31,7 +31,310 @@ $SID = session_id();
         </section>  
     ";
    
-    
+function show_main_menu($db)
+{
+	global $content,$sessuseri,$sessemail,$sessfname,$sesslname,$sessplyid,$pagecontainerstart,$pagecontainerend,$sitepath;
+	
+	// Get session get variables
+	
+	$SID = $_GET['SID'];
+	$action = $_GET['action'];	
+
+	//-------------------------------------------------
+	// Pagination
+	//-------------------------------------------------
+
+	$limit = 25;																											// how many rows to show per page
+	$pageNum = 1;																											// by default we show first page	
+	if(isset($_GET['page'])) { $pageNum = $_GET['page']; } 						// if $_GET['page'] defined, use it as page number
+	$offset = ($pageNum - 1) * $limit;																// counting the offset
+	$tableName = "players";																						// source table
+	$targetpage = "main.php?SID=$SID&action=$action";									// target page and query params
+	$pagemode = 0;																										// target page mode
+	$query = "SELECT COUNT(PlayerID) AS num FROM $tableName";					// count records query
+	
+	include("$sitepath/includes/general.pagination.inc");
+	
+	echo "$pagecontainerstart";
+	
+?>
+
+	<form id="filter-form" action="main.php?SID=<?=$SID?>&action=<?=$action?>&do=search" method="get" enctype="multipart/form-data">
+	
+	<input type="hidden" name="SID" value="<?=$SID?>">
+	<input type="hidden" name="action" value="<?=$action?>">
+	<input type="hidden" name="do" value="search">
+	<input type="hidden" name="doit" value="1">
+	
+	<div class="fields">
+		<div class="block">
+			<input type="text" onfocus="this.value=''" value="filter list" name="search" maxlength="50">
+			<a href="javascript:" onclick="document.getElementById('filter-form').submit();" class="btn btn-primary">Go</a>
+			<a href="javascript:" onclick="document.location = 'main.php?SID=<?=$SID?>&action=<?=$action?>&do=sadd';" class="btn btn-primary">Create</a>
+		</div>
+	</div>
+	
+	</form>
+
+	<div class="magrid">
+	<table>
+		<thead>
+			<tr>
+				<th>id</th>
+				<th>name</th>
+				<th>club</th>
+				<th>status</th>
+				<th class="lastcolumn">modify</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<td colspan="5">
+					<?=$paginate?>
+				</td>
+			</tr>
+		</tfoot>
+		<tbody>
+
+<?php
+
+	// check for empty database
+
+	if (!$db->Exists("SELECT PlayerID FROM players")) {
+
+		echo "<tr><td colspan=\"4\">There are currently no players in the database. You can add one using the <strong>create</strong> button above.</td></tr>\n";
+
+	} else {	
+	
+	// query the database
+
+	$db->Query("
+		SELECT 
+			pl.PlayerID, 
+			DATE_FORMAT(pl.added,'%b %e, %Y') AS added, 
+			pl.isactive, 
+			pl.PlayerFName, 
+			pl.PlayerLName, 
+			cl.ClubName
+		FROM players pl
+		LEFT JOIN clubs cl ON cl.ClubID = pl.PlayerClub
+		ORDER BY pl.PlayerLName, pl.PlayerFName 
+		LIMIT $offset, $limit
+	");
+	for ($x=0; $x<$db->rows; $x++) {
+		$db->GetRow($x);
+
+		// setup the variables
+
+		$id = $db->data['PlayerID'];
+		$ad = $db->data['added'];
+		$ac = $db->data['isactive'];
+		$fn = $db->data['PlayerFName'];
+		$ln = $db->data['PlayerLName'];
+		$cl = $db->data['ClubName'];
+		
+		// set the active or inactive class
+		
+		if($ac==1) {
+			$accl = "isactive";
+			$acte = "active";
+		} else {
+			$accl = "isinactive";
+			$acte = "not active";
+		}		
+		
+		echo '<tr class="adminrow', ($x % 2 ? '2' : '1'), '">';
+
+?>
+			
+				<td><?=$id?></td>
+				<td><?=$ln?>, <?=$fn?></td>
+				<td><?=$cl?></td>
+				<td><span class="<?=$accl?>"><?=$acte?></span></td>
+				<td class="lastcolumn">
+					<a href="main.php?SID=<?=$SID?>&action=<?=$action?>&do=sedit&id=<?=$id?>"><img src="../images/icons/icon_edit.png" border="0"></a>
+					<a href="main.php?SID=<?=$SID?>&action=<?=$action?>&do=sdel&id=<?=$id?>"><img src="../images/icons/icon_delete.png" border="0"></a>				
+				</td>
+			</tr>
+			
+<?php 
+	
+		} 
+	}	
+	
+?>
+
+		</tbody>
+	</table>
+	</div>
+
+<?php
+
+	echo "$pagecontainerend";
+	
+}
+
+function search_main_menu($db)
+{
+	global $content,$sessuseri,$sessemail,$sessfname,$sesslname,$sessplyid,$pagecontainerstart,$pagecontainerend,$sitepath;
+	
+	// Get session get variables
+	
+	$SID = $_GET['SID'];
+	$action = $_GET['action'];	
+	$search = $_GET['search'];
+
+	//-------------------------------------------------
+	// Pagination
+	//-------------------------------------------------
+
+	$limit = 25;																											// how many rows to show per page
+	$pageNum = 1;																											// by default we show first page	
+	if(isset($_GET['page'])) { $pageNum = $_GET['page']; } 						// if $_GET['page'] defined, use it as page number
+	$offset = ($pageNum - 1) * $limit;																// counting the offset
+	$tableName = "players";																						// source table
+	$targetpage = "main.php?SID=$SID&action=$action&do=search&search=$search";	// target page and query params
+	$pagemode = 0;																										// target page mode
+	$query = "
+		SELECT COUNT(pl.PlayerID) AS num 
+		FROM $tableName pl
+		LEFT JOIN clubs cl ON cl.ClubID = pl.PlayerClub
+		WHERE pl.PlayerFName LIKE '%$search%' 
+		OR pl.PlayerFName LIKE '%$search%' 
+		OR cl.ClubName LIKE '%$search%'";																// count records query
+	
+	include("$sitepath/includes/general.pagination.inc");
+	
+	echo "$pagecontainerstart";
+	
+	$thecount = $db->QueryItem("
+		SELECT COUNT(pl.PlayerID) AS num 
+		FROM $tableName pl
+		LEFT JOIN clubs cl ON cl.ClubID = pl.PlayerClub
+		WHERE pl.PlayerFName LIKE '%$search%' 
+		OR pl.PlayerFName LIKE '%$search%' 
+		OR cl.ClubName LIKE '%$search%'	
+	");
+?>
+
+	<h3><?=$thecount?> <?php if($thecount==1) { echo "record"; } else { echo "records"; } ?> found for your search: <?=$search?> (<a href="main.php?SID=<?=$SID?>&action=<?=$action?>" class="forceunderline">clear filter</a>)</h3>
+
+	<form id="filter-form" action="main.php?SID=<?=$SID?>&action=<?=$action?>&do=search" method="get" enctype="multipart/form-data">
+	
+	<input type="hidden" name="SID" value="<?=$SID?>">
+	<input type="hidden" name="action" value="<?=$action?>">
+	<input type="hidden" name="do" value="search">
+	<input type="hidden" name="doit" value="1">
+	
+	<div class="fields">
+		<div class="block">
+			<input type="text" onfocus="this.value=''" value="filter list" name="search" maxlength="50">
+			<a href="javascript:" onclick="document.getElementById('filter-form').submit();" class="btn btn-primary">Go</a>
+			<a href="javascript:" onclick="document.location = 'main.php?SID=<?=$SID?>&action=<?=$action?>&do=sadd';" class="btn btn-primary">Create</a>
+		</div>
+	</div>
+	
+	</form>
+
+	<div class="magrid">
+	<table>
+		<thead>
+			<tr>
+				<th>id</th>
+				<th>name</th>
+				<th>club</th>
+				<th>status</th>
+				<th class="lastcolumn">modify</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<td colspan="5">
+					<?=$paginate?>
+				</td>
+			</tr>
+		</tfoot>
+		<tbody>
+
+<?php
+
+	// check for empty database
+
+	if (!$db->Exists("SELECT PlayerID FROM players")) {
+
+		echo "<tr><td colspan=\"4\">There are currently no players in the database. You can add one using the <strong>create</strong> button above.</td></tr>\n";
+
+	} else {	
+	
+	// query the database
+
+	$db->Query("
+		SELECT 
+			pl.PlayerID, 
+			DATE_FORMAT(pl.added,'%b %e, %Y') AS added, 
+			pl.isactive, 
+			pl.PlayerFName, 
+			pl.PlayerLName, 
+			cl.ClubName
+		FROM players pl
+		LEFT JOIN clubs cl ON cl.ClubID = pl.PlayerClub
+		WHERE pl.PlayerFName LIKE '%$search%' OR pl.PlayerFName LIKE '%$search%' OR cl.ClubName LIKE '%$search%'
+		ORDER BY pl.PlayerLName, pl.PlayerFName 
+		LIMIT $offset, $limit
+	");
+	for ($x=0; $x<$db->rows; $x++) {
+		$db->GetRow($x);
+
+		// setup the variables
+
+		$id = $db->data['PlayerID'];
+		$ad = $db->data['added'];
+		$ac = $db->data['isactive'];
+		$fn = $db->data['PlayerFName'];
+		$ln = $db->data['PlayerLName'];
+		$cl = $db->data['ClubName'];
+		
+		// set the active or inactive class
+		
+		if($ac==1) {
+			$accl = "isactive";
+			$acte = "active";
+		} else {
+			$accl = "isinactive";
+			$acte = "not active";
+		}		
+		
+		echo '<tr class="adminrow', ($x % 2 ? '2' : '1'), '">';
+
+?>
+			
+				<td><?=$id?></td>
+				<td><?=$ln?>, <?=$fn?></td>
+				<td><?=$cl?></td>
+				<td><span class="<?=$accl?>"><?=$acte?></span></td>
+				<td class="lastcolumn">
+					<a href="main.php?SID=<?=$SID?>&action=<?=$action?>&do=sedit&id=<?=$id?>"><img src="../images/icons/icon_edit.png" border="0"></a>
+					<a href="main.php?SID=<?=$SID?>&action=<?=$action?>&do=sdel&id=<?=$id?>"><img src="../images/icons/icon_delete.png" border="0"></a>				
+				</td>
+			</tr>
+			
+<?php 
+	
+		} 
+	}	
+	
+?>
+
+		</tbody>
+	</table>
+	</div>
+
+<?php
+
+	echo "$pagecontainerend";
+	
+}
+
 function edit_category_form($db,$id)
 {
 	global $content,$action,$SID,$pagecontainerstart,$pagecontainerend;
@@ -392,6 +695,9 @@ case "sedit":
 		do_update_category($db,$id);
 	}
 	break;
+case "search":
+	search_main_menu($db);
+	break;	
 default:
 	show_main_menu($db);
 	break;
