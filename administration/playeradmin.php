@@ -335,7 +335,468 @@ function search_main_menu($db)
 	
 }
 
-function edit_category_form($db,$id)
+function add_article_form($db,$id)
+{
+	global $content,$action,$SID,$pagecontainerstart,$pagecontainerend;
+
+	// Get session get variables
+	
+	$SID = $_GET['SID'];
+	$action = $_GET['action'];	
+
+		echo "$pagecontainerstart";
+	
+?>
+	    
+	  <h3>Main Details (appears on website)</h3>
+
+		<form id="cricket-form" action="main.php?SID=<?=$SID?>&action=<?=$action?>&do=sadd" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="SID" value="<?=$SID?>">
+		<input type="hidden" name="action" value="<?=$action?>">
+		<input type="hidden" name="do" value="sadd">
+		<input type="hidden" name="doit" value="1">
+		
+		<div class="fields">
+
+		<div class="block">
+		<label>first name</label> 
+			<input type="text" name="PlayerFName" maxlength="50">
+		</div>
+
+		<div class="block">
+		<label>last name</label> 
+			<input type="text" name="PlayerLName" maxlength="50">
+		</div>
+
+		<div class="block">
+		<label>nickname</label> 
+			<input type="text" name="NickName" maxlength="50">
+		</div>
+
+		<div class="block">
+		<label>birth city</label> 
+			<input type="text" name="Born" maxlength="50">
+		</div>
+		
+		<div class="block">
+		<label>DOB <i>(YYYY-MM-DD)</i></label> 
+			<input type="text" name="DOB" maxlength="50">
+		</div>
+		
+		<div class="block">
+		<label>batting style</label> 
+		 <select name="BattingStyle">
+			<option value="">select style</option>
+			<option value="">--------------------------</option>
+			<option value="Right Hand Bat">Right Hand Bat</option>
+			<option value="Left Hand Bat">Left Hand Bat</option>
+		 </select>			
+		</div>
+
+		<div class="block">
+		<label>bowling style</label> 
+		<select name="BowlingStyle">
+			<option value="">select style</option>
+			<option value="">--------------------------</option>
+			<option value="Right Arm Fast">Right Arm Fast</option>
+			<option value="Right Arm Fast Medium">Right Arm Fast Medium</option>
+			<option value="Right Arm Medium">Right Arm Medium</option>
+			<option value="Right Arm Slow">Right Arm Slow</option>
+			<option value="Right Arm Off Spin">Right Arm Off Spin</option>
+			<option value="Right Arm Leg Spin">Right Arm Leg Spin</option>
+			<option value="Left Arm Fast">Left Arm Fast</option>
+			<option value="Left Arm Fast Medium">Left Arm Fast Medium</option>
+			<option value="Left Arm Medium">Left Arm Medium</option>
+			<option value="Left Arm Slow">Left Arm Slow</option>
+			<option value="Left Arm Off Spin">Left Arm Off Spin</option>
+			<option value="Left Arm Leg Spin">Left Arm Leg Spin</option>
+		</select>			
+		</div>
+
+		<div class="block">
+		<textarea name="shortprofile" id="myTextarea"></textarea>
+		</div>
+
+	  <h3>Contact Details (internal only)</h3>
+
+		<div class="block">
+		<label>phone #</label> 
+			<input type="text" name="phone" maxlength="50">
+		</div>
+		
+		<div class="block">
+		<label>mobile #</label> 
+			<input type="text" name="mobile" maxlength="50">
+		</div>
+		
+		<div class="block">
+		<label>address 1</label> 
+			<input type="text" name="address1" maxlength="50">
+		</div>
+		
+		<div class="block">
+		<label>address 2</label> 
+			<input type="text" name="address2" maxlength="50">
+		</div>
+		
+		<div class="block">
+		<label>city</label> 
+			<input type="text" name="city" maxlength="50">
+		</div>
+		
+		<div class="block">
+		<label>state</label> 
+			<input type="text" name="state" maxlength="50">
+		</div>	
+		
+		<div class="block">
+		<label>post code</label> 
+			<input type="text" name="postcode" maxlength="50">
+		</div>			
+
+		<div class="block">
+		<label>email [?]</label> 
+			<input type="text" name="PlayerEmail" maxlength="50">
+		</div>
+
+		<div class="block">
+		<label>facebook [?]</label> 
+			<input type="text" name="AIM" maxlength="50">
+		</div>
+		
+		<div class="block">
+		<label>google [?]</label> 
+			<input type="text" name="google" maxlength="50">
+		</div>
+		
+		<div class="block">
+		<label>yahoo [?]</label> 
+			<input type="text" name="YAHOO" maxlength="50">
+		</div>		
+
+		<div class="block">
+		<label>msn [?]</label> 
+			<input type="text" name="MSN" maxlength="50">
+		</div>
+		
+		<div class="block">
+		<label>icq [?]</label> 
+			<input type="text" name="ICQ" maxlength="50">
+		</div>
+		
+		<div class="block">
+		<label>&nbsp;</label>
+			<a href="main.php?SID=<?=$SID?>&cancel=playeradmin" class="btn btn-secondary">Cancel</a>&nbsp;<a href="javascript:" onclick="document.getElementById('cricket-form').submit();" class="btn btn-primary">Submit</a>
+		</div>
+
+	</div>
+	</form>
+	
+
+<?php 
+
+	echo "$pagecontainerend";
+
+}
+
+function do_add_article($db)
+{
+	global $content,$sessuseri,$sessemail,$sessfname,$sesslname,$sessplyid,$pagecontainerstart,$pagecontainerend,$sitepath;
+
+	// Get session get variables
+	
+	$SID = $_GET['SID'];
+	$action = $_GET['action'];	
+	
+	// setup the variables
+
+	$pln = addslashes(trim($_POST['PlayerLName']));
+	$pfn = addslashes(trim($_POST['PlayerFName']));
+	$nin = addslashes(trim($_POST['NickName']));
+	$pcl = addslashes(trim($_POST['PlayerClub']));
+	$pte = addslashes(trim($_POST['PlayerTeam']));
+	$pem = addslashes(trim($_POST['PlayerEmail']));
+	$spr = addslashes(trim($_POST['shortprofile']));
+	$pho = addslashes(trim($_POST['phone']));
+	$mob = addslashes(trim($_POST['mobile']));	
+	$ad1 = addslashes(trim($_POST['address1']));
+	$ad2 = addslashes(trim($_POST['address2']));
+	$cit = addslashes(trim($_POST['city']));
+	$sta = addslashes(trim($_POST['state']));
+	$pos = addslashes(trim($_POST['postcode']));
+	$aim = addslashes(trim($_POST['AIM']));
+	$yah = addslashes(trim($_POST['YAHOO']));	
+	$msn = addslashes(trim($_POST['MSN']));
+	$icq = addslashes(trim($_POST['ICQ']));
+	$goo = addslashes(trim($_POST['google']));
+	$bor = addslashes(trim($_POST['Born']));
+	$dob = addslashes(trim($_POST['DOB']));	
+	$bat = addslashes(trim($_POST['BattingStyle']));
+	$bow = addslashes(trim($_POST['BowlingStyle']));
+	
+	// build the permalink
+	
+	$pel = preg_replace('/[^a-zA-Z0-9s ]/', '', $pln);
+	$pef = preg_replace('/[^a-zA-Z0-9s ]/', '', $pfn);
+	$per = $pef."-".$pel;
+	$per = preg_replace('/  /', ' ', $per);
+	$per = preg_replace('/ /', '-', $per);
+	$per = strtolower($per);	
+	
+	// check to see if the permalink exists, if so, add 1
+	
+	if ($db->Exists("SELECT permalink FROM players WHERE permalink = '$per'")) {
+	if ($db->Exists("SELECT permalink FROM players WHERE permalink = CONCAT('$per','-1')")) {
+	
+			$last = $db->QueryItem("SELECT MAX(permalink) AS lastpermalink FROM players WHERE permalink LIKE '$per%'");
+			
+			$numb = preg_replace("/[^0-9]/", '', $last);
+			$stri = preg_replace('/[^a-z-]/i', '', $last);
+			
+			$numb++;
+			$next = $stri.$numb;
+			
+		} else {
+	
+			$next = $per."-1";
+		}
+	
+	} else {		
+
+	$next = $per;
+	
+	}	
+
+	// make sure info is present and correct
+
+	if ($pln == "" || $pfn == "") {
+		echo "<div class=\"msg-alerting\"><div class=\"msg-error\">You must complete a first name and last name. <a href=\"javascript:history.go(-1)\">Try again</a>.</div></div>\n";
+		echo "$pagecontainerstart";
+		echo "$pagecontainerend";
+		return;
+	}
+	
+	// do the photo upload work here
+	
+	$userpic = preg_replace("/[^A-Z0-9._-]/i", "_",strtolower(basename($_FILES['userpic']['name'])));
+	
+	// Was a new photo uploaded? If so, process, if not, ignore
+	
+	if($userpic != "") {
+
+	// lets datestamp the file to help prevent overwrites
+
+	$picdate = date('Ymd_');
+	$userpic = $picdate.$userpic; 
+	
+	// additional file information
+
+	$uploadsize = $_FILES['userpic']['size'];
+	$uploadtype = $_FILES['userpic']['type'];
+	
+	// allowed files
+	
+	$filetype = exif_imagetype($_FILES["userpic"]["tmp_name"]);
+	$allowed = array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG);
+	
+	// destination directory 
+	
+	$target = "$sitepath/uploadphotos/players/"; 
+	$target = $target . $userpic;  
+ 	
+ 	// file is too big
+ 	
+	if ($uploadsize > 3500000) { 
+		echo "<div class=\"msg-alerting\"><div class=\"msg-error\">That photo was too large. <a href=\"javascript:history.go(-1)\">Try again</a>.</div></div>\n";
+		echo "$pagecontainerstart";
+		echo "$pagecontainerend";
+		return; 
+	}
+	
+	// if not allowed file 
+	
+	if (!in_array($filetype, $allowed)) {
+		echo "<div class=\"msg-alerting\"><div class=\"msg-error\">Sorry! Only jpg, gif, png allowed. You uploaded a $uploadtype. <a href=\"javascript:history.go(-1)\">Try again</a>.</div></div>\n";
+		echo "$pagecontainerstart";
+		echo "$pagecontainerend";
+		return; 
+	}
+ 
+ 	// lets move the file
+ 
+	if(move_uploaded_file($_FILES['userpic']['tmp_name'], $target)) { 
+		$ok = 1;
+	} else { 
+		$ok = 0;
+	} 
+	
+	} else {
+	
+	$userpic = "";
+	$ok = 1;
+	
+	}
+	
+	if($ok==1) { 
+	// query database
+
+	$db->Insert("
+	INSERT INTO players (
+		PlayerLName,
+		PlayerFName,
+		NickName,
+		PlayerEmail,
+		shortprofile,
+		Born,
+		DOB,
+		BattingStyle,
+		BowlingStyle,
+		AIM,
+		YAHOO,
+		MSN,
+		ICQ,
+		google,
+		phone,
+		mobile,
+		address1,
+		address2,
+		city,
+		state,
+		postcode,
+		permalink,
+		added
+	) VALUES (
+		'$pln',
+		'$pfn',
+		'$nin',
+		'$pem',
+		'$spr',
+		'$bor',
+		'$dob',
+		'$bat',
+		'$bow',
+		'$aim',
+		'$yah',
+		'$msn',
+		'$icq',
+		'$goo',
+		'$pho',
+		'$mob',
+		'$ad1',
+		'$ad2',
+		'$cit',
+		'$sta',
+		'$pos',
+		'$next',
+		now()
+	)");
+		if ($db->a_rows != -1) {
+
+		// event logging
+		
+		$db->Insert("
+			INSERT INTO events (event_userid, event_date, event_type, event_module, event_objectid, event_associatedid, event_text) 
+			VALUES ($sessuseri, NOW(), '1', '18', LAST_INSERT_ID(), NULL, '$sessfname $sesslname added player ''$pfn $pln''.')
+		");
+
+			echo "<div class=\"msg-alerting\"><div class=\"msg-ok\">You have successfully added a new player. <a href=\"main.php?SID=$SID&action=$action&do=sadd\">Add another</a> | <a href=\"main.php?SID=$SID&action=$action\">Back to list</a></div></div>\n";
+			echo "$pagecontainerstart";
+			echo "$pagecontainerend";	
+			
+		} else {
+		
+			echo "<div class=\"msg-alerting\"><div class=\"msg-error\">The player could not be added to the database at this time. <a href=\"main.php?SID=$SID&action=$action\">Back to list</a></div></div>\n";
+			echo "$pagecontainerstart";
+			echo "$pagecontainerend";			
+		}	
+		
+	} else {
+	
+			echo "<div class=\"msg-alerting\"><div class=\"msg-error\">There was an error uploading the image. Try again later. <a href=\"main.php?SID=$SID&action=$action\">Back to list</a></div></div>\n";
+			echo "$pagecontainerstart";
+			echo "$pagecontainerend";		
+	}
+
+}
+
+function delete_article_check($db)
+{
+	global $content,$sessuseri,$sessemail,$sessfname,$sesslname,$sessplyid,$pagecontainerstart,$pagecontainerend,$sitepath;
+	
+	// Get session get variables
+	
+	$SID = $_GET['SID'];
+	$action = $_GET['action'];	
+	$id = $_GET['id'];
+
+	// query the database
+
+	$db->QueryRow("SELECT PlayerID, PlayerFName, PlayerLName FROM players WHERE PlayerID='$id'");
+
+	// setup variables
+
+	$id = $db->data['PlayerID'];
+	$fn = $db->data['PlayerFName'];
+	$ln = $db->data['PlayerLName'];
+
+	// output
+
+	echo "<div class=\"msg-alerting\"><div class=\"msg-atten\">Are you sure you wish to delete the player:\n";
+	echo "&nbsp;<b>$fn $ln</b>\n";
+	echo "&nbsp;<a href=\"main.php?SID=$SID&action=$action&do=sdel&id=$id&doit=1\">YES</a> | <a href=\"main.php?SID=$SID&action=$action&do=sdel&id=$id&doit=0\">NO</a></div></div>\n";
+	
+	echo "$pagecontainerstart";
+	echo "$pagecontainerend";
+}
+
+function do_delete_article($db)
+{
+	global $content,$sessuseri,$sessemail,$sessfname,$sesslname,$sessplyid,$pagecontainerstart,$pagecontainerend,$sitepath;
+	
+	// Get session get variables
+	
+	$SID = $_GET['SID'];
+	$action = $_GET['action'];	
+	$id = $_GET['id'];
+
+	// query the database
+
+	$db->QueryRow("SELECT PlayerID, PlayerFName, PlayerLName FROM players WHERE PlayerID='$id'");
+
+	// setup variables
+
+	$id = $db->data['PlayerID'];
+	$fn = $db->data['PlayerFName'];
+	$ln = $db->data['PlayerLName'];
+	
+	// decided not to delete
+
+	if (!$_GET['doit']) { 
+	
+		echo "<div class=\"msg-alerting\"><div class=\"msg-info\">You have chosen NOT to delete: <b>$fn $ln</b>. <a href=\"main.php?SID=$SID&action=$action\">Back to list</a>.</div></div>\n";
+		echo "$pagecontainerstart";
+		echo "$pagecontainerend";
+	
+	} else {
+
+	// do delete
+
+		$db->Delete("DELETE FROM players WHERE PlayerID='$id'");
+		echo "<div class=\"msg-alerting\"><div class=\"msg-ok\">You have successfully deleted: <b>$fn $ln</b>. <a href=\"main.php?SID=$SID&action=$action\">Back to list</a>.</div></div>\n";
+		echo "$pagecontainerstart";
+		echo "$pagecontainerend";
+		
+	// event logging
+	
+	$db->Insert("
+		INSERT INTO events (event_userid, event_date, event_type, event_module, event_objectid, event_associatedid, event_text) 
+		VALUES ($sessuseri,NOW(),'3','18','$id', NULL, '$sessfname $sesslname deleted player ''$fn $ln''.')
+	");
+		
+	}
+}
+
+function edit_article_form($db,$id)
 {
 	global $content,$action,$SID,$pagecontainerstart,$pagecontainerend;
 
@@ -550,7 +1011,7 @@ function edit_category_form($db,$id)
 
 }
 
-function do_update_category($db,$id)
+function do_update_article($db,$id)
 {
 	global $content,$sessuseri, $sessemail, $sessfname, $sesslname, $sessplyid, $pagecontainerstart, $pagecontainerend;
 	
@@ -688,11 +1149,19 @@ header("Location: main.php?SID=" . $_GET['SID'] . "");
 <?php
                                         
 switch($_GET['do']) {
+case "sadd":
+	if (!isset($_POST['doit'])) add_article_form($db);
+	else do_add_article($db);
+	break;
+case "sdel":
+	if (!isset($_GET['doit'])) delete_article_check($db);
+	else do_delete_article($db);
+	break;
 case "sedit":
 	if (!isset($_POST['doit'])) {
-		edit_category_form($db,$id);
+		edit_article_form($db,$id);
 	} else { 
-		do_update_category($db,$id);
+		do_update_article($db,$id);
 	}
 	break;
 case "search":
