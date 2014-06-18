@@ -372,6 +372,27 @@ function add_article_form($db,$id)
 		<label>nickname</label> 
 			<input type="text" name="NickName" maxlength="50">
 		</div>
+		
+		<div class="block">
+		<label>club [<span class="hint--top" data-hint="Select the club that this player belongs to. A player can belong to one club only."><u>?</u></span>]</label>
+			<select name="PlayerClub">
+			<option value="">select club</option>
+			<option value="">---------------------</option>
+			<?php
+				// Get the clist of clubs
+				if ($db->Exists("SELECT ClubID FROM clubs")) {
+					$db->Query("SELECT ClubID, ClubName FROM clubs ORDER BY ClubName");
+					for ($m=0; $m<$db->rows; $m++) {
+						$db->GetRow($m);
+						$cid = $db->data['ClubID'];
+						$cna = $db->data['ClubName'];
+	
+						echo "<option value=\"$cid\">$cna</option>\n";
+					}
+				}
+			?>
+		</select>
+		</div>	
 
 		<div class="block">
 		<label>birth city</label> 
@@ -412,6 +433,11 @@ function add_article_form($db,$id)
 			<option value="Left Arm Leg Spin">Left Arm Leg Spin</option>
 		</select>			
 		</div>
+		
+		<div class="block">
+		<label>profile photo [<span class="hint--top" data-hint="Portrait style photo. JPG, GIF or PNG only. No other formats will be accepted."><u>?</u></span>]</label> 
+			<input type="file" name="userpic">
+		</div>	
 
 		<div class="block">
 		<textarea name="shortprofile" id="myTextarea"></textarea>
@@ -645,6 +671,7 @@ function do_add_article($db)
 		PlayerLName,
 		PlayerFName,
 		NickName,
+		PlayerClub,
 		PlayerEmail,
 		shortprofile,
 		Born,
@@ -664,11 +691,13 @@ function do_add_article($db)
 		state,
 		postcode,
 		permalink,
+		picture,		
 		added
 	) VALUES (
 		'$pln',
 		'$pfn',
 		'$nin',
+		'$pcl',
 		'$pem',
 		'$spr',
 		'$bor',
@@ -688,6 +717,7 @@ function do_add_article($db)
 		'$sta',
 		'$pos',
 		'$next',
+		'$userpic',
 		now()
 	)");
 		if ($db->a_rows != -1) {
@@ -815,6 +845,7 @@ function edit_article_form($db,$id)
 	$pln = $db->data['PlayerLName'];
 	$pfn = $db->data['PlayerFName'];
 	$nin = $db->data['NickName'];
+	$pcl = $db->data['PlayerClub'];
 	$pem = $db->data['PlayerEmail'];
 	$spr = $db->data['shortprofile'];
 	$aim = $db->data['AIM'];
@@ -840,6 +871,7 @@ function edit_article_form($db,$id)
 	$dob = $db->data['DOB'];	
 	$bat = $db->data['BattingStyle'];
 	$bow = $db->data['BowlingStyle'];
+	$pic = $db->data['picture'];
 
 	$ip = stripslashes($db->data['isactive']);
 	$ipyes = 'yes';
@@ -854,6 +886,15 @@ function edit_article_form($db,$id)
 	if ($db->data['islifemember'] ==0) $il1 = $ilno;
 
 	$ic = stripslashes($db->data['iscelebrity']);
+	
+	// is there a photo?
+
+	if($pic=="") { 
+		$displaypic = "";
+	} else {
+		$displaypic = "<img src='$siteurl/uploadphotos/players/" . $pic . "'>";
+	}	
+	
 
 		echo "$pagecontainerstart";
 	
@@ -884,6 +925,30 @@ function edit_article_form($db,$id)
 		<label>nickname</label> 
 			<input type="text" name="NickName" maxlength="50" value="<?=$nin?>">
 		</div>
+
+		<div class="block">
+		<label>club [<span class="hint--top" data-hint="Select the club that this player belongs to. A player can only belong to one club."><u>?</u></span>]</label>
+			<select name="PlayerClub">
+			<option value="">select club</option>
+			<option value="">---------------------</option>
+			<?php
+				// Get the clist of clubs
+				if ($db->Exists("SELECT ClubID FROM clubs")) {
+					$db->Query("SELECT ClubID, ClubName FROM clubs ORDER BY ClubName");
+					for ($m=0; $m<$db->rows; $m++) {
+						$db->GetRow($m);
+						$cid = $db->data['ClubID'];
+						$cna = $db->data['ClubName'];
+
+						echo "<option value=\"$cid\" ";
+							if($pcl == $cid) echo "selected";
+						echo ">$cna</option>\n";
+
+					}
+				}
+			?>
+		</select>
+		</div>	
 
 		<div class="block">
 		<label>birth city</label> 
@@ -923,6 +988,18 @@ function edit_article_form($db,$id)
 			<option value="Left Arm Off Spin">Left Arm Off Spin</option>
 			<option value="Left Arm Leg Spin">Left Arm Leg Spin</option>
 		</select>			
+		</div>
+
+		<?php if($pic=="") { echo ""; } else { ?>
+		<div class="block">
+		<label>current photo</label>
+			<?php echo $displaypic; ?>
+		</div>
+		<?php } ?>	
+
+		<div class="block">
+		<label>profile photo [<span class="hint--top" data-hint="Portrait style only. JPG, GIF or PNG only. No other formats will be accepted."><u>?</u></span>]</label> 
+			<input type="file" name="userpic">
 		</div>
 
 		<div class="block">
@@ -1090,6 +1167,61 @@ function do_update_article($db,$id)
 	
 	}	
 
+	// do the photo upload work here
+	
+	$userpic = preg_replace("/[^A-Z0-9._-]/i", "_",strtolower(basename($_FILES['userpic']['name'])));
+
+	// Was a new photo uploaded? If so, process, if not, ignore
+	
+	if($userpic != "") {
+	
+	// additional file information
+
+	$uploadsize = $_FILES['userpic']['size'];
+	$uploadtype = $_FILES['userpic']['type'];
+	
+	// allowed files
+	
+	$filetype = exif_imagetype($_FILES["userpic"]["tmp_name"]);
+	$allowed = array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG);
+	
+	// destination directory 
+	
+	$target = "$sitepath/uploadphotos/players/"; 
+	$target = $target . $userpic;  
+ 	
+ 	// file is too big
+ 	
+	if ($uploadsize > 3500000) { 
+		echo "<div class=\"msg-alerting\"><div class=\"msg-error\">That photo was too large. <a href=\"javascript:history.go(-1)\">Try again</a>.</div></div>\n";
+		echo "$pagecontainerstart";
+		echo "$pagecontainerend";
+		return; 
+	}
+	
+	// if not allowed file 
+	
+	if (!in_array($filetype, $allowed)) {
+		echo "<div class=\"msg-alerting\"><div class=\"msg-error\">Sorry! Only jpg, gif, png allowed. You uploaded a $uploadtype. <a href=\"javascript:history.go(-1)\">Try again</a>.</div></div>\n";
+		echo "$pagecontainerstart";
+		echo "$pagecontainerend";
+		return; 
+	}
+ 
+ 	// lets move the file
+ 
+	if(move_uploaded_file($_FILES['userpic']['tmp_name'], $target)) { 
+		$ok = 1;
+	} else { 
+		$ok = 0;
+	} 
+	
+	} else { 
+	
+	$userpic = $db->QueryItem("SELECT picture FROM players WHERE PlayerID = '$id'");
+	
+	}	
+
 	// query database
 
 	$db->Update("
@@ -1097,6 +1229,7 @@ function do_update_article($db,$id)
 			PlayerLName='$pln',
 			PlayerFName='$pfn',
 			NickName='$nin',
+			PlayerClub='$pcl',
 			PlayerEmail='$pem',
 			shortprofile='$spr',
 			Born='$bor',
@@ -1116,6 +1249,7 @@ function do_update_article($db,$id)
 			state='$sta',
 			postcode='$pos',
 			permalink='$next',
+			picture='$userpic',			
 			edited=now() 
 		 WHERE PlayerID=$plid
 		");
