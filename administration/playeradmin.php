@@ -677,7 +677,7 @@ function do_add_article($db)
 		PlayerLName,
 		PlayerFName,
 		NickName,
-		PlayerActive,
+		isactive,
 		PlayerClub,
 		PlayerEmail,
 		shortprofile,
@@ -853,7 +853,7 @@ function edit_article_form($db,$id)
 	$pln = $db->data['PlayerLName'];
 	$pfn = $db->data['PlayerFName'];
 	$nin = $db->data['NickName'];
-	$act = $db->data['PlayerActive'];
+	$act = $db->data['isactive'];
 	$pcl = $db->data['PlayerClub'];
 	$pem = $db->data['PlayerEmail'];
 	$spr = $db->data['shortprofile'];
@@ -1244,7 +1244,7 @@ function do_update_article($db,$id)
 			PlayerLName='$pln',
 			PlayerFName='$pfn',
 			NickName='$nin',
-			PlayerActive='$act',
+			isactive='$act',
 			PlayerClub='$pcl',
 			PlayerEmail='$pem',
 			shortprofile='$spr',
