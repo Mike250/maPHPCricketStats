@@ -935,8 +935,7 @@ function edit_article_form($db,$id)
 			<input type="text" name="NickName" maxlength="50" value="<?=$nin?>">
 		</div>
 
-		<div class="block">
-		<label>active?</label> 
+		<div class="block" style="padding-left: 142px;">
 			<input type="checkbox" name="isactive" value="<?=$act?>"> check if this is an active player<br />
 		</div>
 
