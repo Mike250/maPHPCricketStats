@@ -372,6 +372,11 @@ function add_article_form($db,$id)
 		<label>nickname</label> 
 			<input type="text" name="NickName" maxlength="50">
 		</div>
+
+		<div class="block">
+		<label>active?</label> 
+			<input type="checkbox" name="active" value="1"> check if this is an active player<br />
+		</div>
 		
 		<div class="block">
 		<label>club [<span class="hint--top" data-hint="Select the club that this player belongs to. A player can belong to one club only."><u>?</u></span>]</label>
@@ -559,6 +564,7 @@ function do_add_article($db)
 	$dob = addslashes(trim($_POST['DOB']));	
 	$bat = addslashes(trim($_POST['BattingStyle']));
 	$bow = addslashes(trim($_POST['BowlingStyle']));
+	$act = addslashes(trim($_POST['active']));
 	
 	// build the permalink
 	
@@ -671,6 +677,7 @@ function do_add_article($db)
 		PlayerLName,
 		PlayerFName,
 		NickName,
+		PlayerActive,
 		PlayerClub,
 		PlayerEmail,
 		shortprofile,
@@ -697,6 +704,7 @@ function do_add_article($db)
 		'$pln',
 		'$pfn',
 		'$nin',
+		'$act',
 		'$pcl',
 		'$pem',
 		'$spr',
@@ -828,7 +836,7 @@ function do_delete_article($db)
 
 function edit_article_form($db,$id)
 {
-	global $content,$action,$SID,$pagecontainerstart,$pagecontainerend;
+	global $content,$action,$SID,$pagecontainerstart,$pagecontainerend,$siteurl;
 
 	// Get session get variables
 	
@@ -845,6 +853,7 @@ function edit_article_form($db,$id)
 	$pln = $db->data['PlayerLName'];
 	$pfn = $db->data['PlayerFName'];
 	$nin = $db->data['NickName'];
+	$act = $db->data['PlayerActive'];
 	$pcl = $db->data['PlayerClub'];
 	$pem = $db->data['PlayerEmail'];
 	$spr = $db->data['shortprofile'];
@@ -890,7 +899,7 @@ function edit_article_form($db,$id)
 	// is there a photo?
 
 	if($pic=="") { 
-		$displaypic = "";
+		$displaypic = "<img src='$siteurl/uploadphotos/players/HeadNoMan.jpg'>";
 	} else {
 		$displaypic = "<img src='$siteurl/uploadphotos/players/" . $pic . "'>";
 	}	
@@ -924,6 +933,11 @@ function edit_article_form($db,$id)
 		<div class="block">
 		<label>nickname</label> 
 			<input type="text" name="NickName" maxlength="50" value="<?=$nin?>">
+		</div>
+
+		<div class="block">
+		<label>active?</label> 
+			<input type="checkbox" name="active" value="<?=$act?>"> check if this is an active player<br />
 		</div>
 
 		<div class="block">
@@ -1113,6 +1127,7 @@ function do_update_article($db,$id)
 	$pln = addslashes(trim($_POST['PlayerLName']));
 	$pfn = addslashes(trim($_POST['PlayerFName']));
 	$nin = addslashes(trim($_POST['NickName']));
+	$act = addslashes(trim($_POST['active']));
 	$pcl = addslashes(trim($_POST['PlayerClub']));
 	$pte = addslashes(trim($_POST['PlayerTeam']));
 	$pem = addslashes(trim($_POST['PlayerEmail']));
@@ -1229,6 +1244,7 @@ function do_update_article($db,$id)
 			PlayerLName='$pln',
 			PlayerFName='$pfn',
 			NickName='$nin',
+			PlayerActive='$act',
 			PlayerClub='$pcl',
 			PlayerEmail='$pem',
 			shortprofile='$spr',
@@ -1271,7 +1287,6 @@ function do_update_article($db,$id)
 	}		
 	
 }
-
 
 // main program
 
