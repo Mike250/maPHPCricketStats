@@ -375,7 +375,7 @@ function add_article_form($db,$id)
 
 		<div class="block">
 		<label>active?</label> 
-			<input type="checkbox" name="active" value="1"> check if this is an active player<br />
+			<input type="checkbox" name="isactive" value="1"> check if this is an active player<br />
 		</div>
 		
 		<div class="block">
@@ -564,7 +564,7 @@ function do_add_article($db)
 	$dob = addslashes(trim($_POST['DOB']));	
 	$bat = addslashes(trim($_POST['BattingStyle']));
 	$bow = addslashes(trim($_POST['BowlingStyle']));
-	$act = addslashes(trim($_POST['active']));
+	$act = addslashes(trim($_POST['isactive']));
 	
 	// build the permalink
 	
@@ -937,7 +937,7 @@ function edit_article_form($db,$id)
 
 		<div class="block">
 		<label>active?</label> 
-			<input type="checkbox" name="active" value="<?=$act?>"> check if this is an active player<br />
+			<input type="checkbox" name="isactive" value="<?=$act?>"> check if this is an active player<br />
 		</div>
 
 		<div class="block">
@@ -1127,7 +1127,7 @@ function do_update_article($db,$id)
 	$pln = addslashes(trim($_POST['PlayerLName']));
 	$pfn = addslashes(trim($_POST['PlayerFName']));
 	$nin = addslashes(trim($_POST['NickName']));
-	$act = addslashes(trim($_POST['active']));
+	$act = addslashes(trim($_POST['isactive']));
 	$pcl = addslashes(trim($_POST['PlayerClub']));
 	$pte = addslashes(trim($_POST['PlayerTeam']));
 	$pem = addslashes(trim($_POST['PlayerEmail']));
