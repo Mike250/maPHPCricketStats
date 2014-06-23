@@ -190,6 +190,7 @@ $(window).load(function() {
                                         		$_GET['action'] == "clubadmin" || 
                                         		$_GET['action'] == "teamadmin" ||
                                         		$_GET['action'] == "groundadmin"  || 
+                                        		$_GET['action'] == "scheduleadmin"  || 
                                         		$_GET['action'] == "playeradmin" 
                                         	) 
                                         	{ $activeclass = " active"; 
@@ -201,6 +202,7 @@ $(window).load(function() {
 																							<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=teamadmin">Teams Administration</a></li>																							
 																							<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=groundadmin">Grounds Administration</a></li>
 																							<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=playeradmin">Players Administration</a></li>
+																							<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=scheduleadmin">Schedule Administration</a></li>
                                             </ul>
                                         </li>                                        
                                         <?php 
