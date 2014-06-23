@@ -172,6 +172,7 @@ $(window).load(function() {
                                         <?php 
                                         	if(
                                         		$_GET['action'] == "newsadmin" || 
+                                        		$_GET['action'] == "documentadmin" || 
                                         		$_GET['action'] == "historyadmin"
                                         	) 
                                         	{ $activeclass = " active"; 
@@ -180,7 +181,8 @@ $(window).load(function() {
                                         <li class="sub-menu<?=$activeclass?>"><a href="#">Website<span></span><em></em></a>
                                             <ul class="submenu">
                                             	<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=historyadmin">History Administration</a></li>
-																							<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=newsadmin">News Administration</a></li>																							
+																							<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=newsadmin">News Administration</a></li>			
+																							<li><a href="<?=$siteurl?>/administration/main.php?SID=<?=$SID?>&action=documentadmin">Document Administration</a></li>			
                                             </ul>
                                         </li>
                                         <?php 
