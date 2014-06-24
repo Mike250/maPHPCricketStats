@@ -383,7 +383,7 @@ function add_article_form($db)
 
 ?>
 
-	<h3>Add an article</h3>
+	<h3>Add a fixture</h3>
 
 	<form id="cricket-form" action="main.php?SID=<?=$SID?>&action=<?=$action?>&do=sadd" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="SID" value="<?=$SID?>">
@@ -394,14 +394,124 @@ function add_article_form($db)
 	<div class="fields">
 
 	<div class="block">
-	<label>title</label> 
-		<input type="text" name="title" maxlength="50">
+	<label>week</label> 
+		<input type="text" name="week" maxlength="50">
 	</div>
 
 	<div class="block">
-	<label>upload photo [<span class="hint--top" data-hint="JPG, GIF or PNG only. No other formats will be accepted."><u>?</u></span>]</label> 
-		<input type="file" name="userpic">
+	<label>season [<span class="hint--top" data-hint="Select the season that this fixture belongs to. Every fixture must be associated with a season."><u>?</u></span>]</label>
+		<select name="type">
+		<option value="">select season</option>
+		<option value="">---------------------</option>
+		<?php
+			// Get the clist of seasons
+			if ($db->Exists("SELECT SeasonID FROM seasons")) {
+				$db->Query("SELECT SeasonID, SeasonName FROM seasons ORDER BY SeasonName");
+				for ($m=0; $m<$db->rows; $m++) {
+					$db->GetRow($m);
+					$sid = $db->data['SeasonID'];
+					$sna = $db->data['SeasonName'];
+
+					echo "<option value=\"$sid\">$sna</option>\n";
+				}
+			}
+		?>
+	</select>
+	</div>	
+
+	<div class="block">
+	<label>date 1 [<span class="hint--top" data-hint="Select the date that this fixture will be played on."><u>?</u></span>]</label> 
+		<input type="text" name="date1" maxlength="50">
 	</div>
+
+	<div class="block">
+	<label>date 2 [<span class="hint--top" data-hint="If required. Enter the last date that this multiple day fixture ends on."><u>?</u></span>]</label> 
+		<input type="text" name="date 2" maxlength="50">
+	</div>
+
+	<div class="block">
+	<label>league [<span class="hint--top" data-hint="Select the league that this fixture belongs to. Every fixture must be associated with a league."><u>?</u></span>]</label>
+		<select name="league_id">
+		<option value="">select league</option>
+		<option value="">---------------------</option>
+		<?php
+			// Get the clist of leagues
+			if ($db->Exists("SELECT LeagueID FROM league")) {
+				$db->Query("SELECT LeagueID, LeagueName FROM league ORDER BY LeagueName");
+				for ($m=0; $m<$db->rows; $m++) {
+					$db->GetRow($m);
+					$lid = $db->data['LeagueID'];
+					$lna = $db->data['LeagueName'];
+
+					echo "<option value=\"$lid\">$lna</option>\n";
+				}
+			}
+		?>
+	</select>
+	</div>	
+
+	<div class="block">
+	<label>awayteam [<span class="hint--top" data-hint="Select the visiting team."><u>?</u></span>]</label>
+		<select name="awayteam">
+		<option value="">select team</option>
+		<option value="">---------------------</option>
+		<?php
+			// Get the clist of teams
+			if ($db->Exists("SELECT TeamID FROM teams")) {
+				$db->Query("SELECT TeamID, TeamName FROM teams ORDER BY TeamName");
+				for ($m=0; $m<$db->rows; $m++) {
+					$db->GetRow($m);
+					$aid = $db->data['TeamID'];
+					$ana = $db->data['TeamName'];
+
+					echo "<option value=\"$aid\">$ana</option>\n";
+				}
+			}
+		?>
+	</select>
+	</div>	
+
+	<div class="block">
+	<label>hometeam [<span class="hint--top" data-hint="Select the home team."><u>?</u></span>]</label>
+		<select name="hometeam">
+		<option value="">select team</option>
+		<option value="">---------------------</option>
+		<?php
+			// Get the clist of teams
+			if ($db->Exists("SELECT TeamID FROM teams")) {
+				$db->Query("SELECT TeamID, TeamName FROM teams ORDER BY TeamName");
+				for ($m=0; $m<$db->rows; $m++) {
+					$db->GetRow($m);
+					$hid = $db->data['TeamID'];
+					$hna = $db->data['TeamName'];
+
+					echo "<option value=\"$hid\">$hna</option>\n";
+				}
+			}
+		?>
+	</select>
+	</div>	
+
+	<div class="block">
+	<label>venue [<span class="hint--top" data-hint="Select the ground this fixture is to be played upon."><u>?</u></span>]</label>
+		<select name="venue">
+		<option value="">select ground</option>
+		<option value="">---------------------</option>
+		<?php
+			// Get the clist of grounds
+			if ($db->Exists("SELECT GroundID FROM grounds")) {
+				$db->Query("SELECT GroundID, GroundName FROM grounds ORDER BY GroundName");
+				for ($m=0; $m<$db->rows; $m++) {
+					$db->GetRow($m);
+					$gid = $db->data['GroundID'];
+					$gna = $db->data['GroundName'];
+
+					echo "<option value=\"$gid\">$gna</option>\n";
+				}
+			}
+		?>
+	</select>
+	</div>	
 		
 	<div class="block">
 		<textarea name="article" id="myTextarea"></textarea>
@@ -432,126 +542,58 @@ function do_add_article($db)
 	
 	// Get post variables 
 	
-	$tit = addslashes(trim($_POST['title']));
-	$art = addslashes(trim($_POST['article']));
+	$wee = addslashes(trim($_POST['week']));
+	$sea = addslashes(trim($_POST['season']));
+	$da1 = addslashes(trim($_POST['date1']));
+	$da2 = addslashes(trim($_POST['date2']));
+	$lid = addslashes(trim($_POST['league_id']));
+	$ven = addslashes(trim($_POST['venue']));
+	$awa = addslashes(trim($_POST['awayteam']));
+	$hom = addslashes(trim($_POST['hometeam']));
 	
-	// permalink work
-	
-	$per = preg_replace('/[^a-zA-Z0-9s ]/', '', $tit);
-	$per = preg_replace('/  /', ' ', $per);
-	$per = preg_replace('/ /', '-', $per);	
-	$per = strtolower($per);
-
 	// make sure info is present and correct
 
-	if ($tit == "" || $art == "") {
-		echo "<div class=\"msg-alerting\"><div class=\"msg-error\">You must complete an article title and compose an article. <a href=\"javascript:history.go(-1)\">Try again</a>.</div></div>\n";
+	if ($da1 == "" || $sea == "" || $lid == "" || $ven == "" || $hom == "" || $awa == "") {
+		echo "<div class=\"msg-alerting\"><div class=\"msg-error\">You must complete the date, select a season, league, venue and teams. <a href=\"javascript:history.go(-1)\">Try again</a>.</div></div>\n";
 		echo "$pagecontainerstart";
 		echo "$pagecontainerend";
 		return;
 	}
-	
-	// check for duplicates
 
-	if ($db->Exists("SELECT title FROM history WHERE title='$tit'")) {
-		echo "<div class=\"msg-alerting\"><div class=\"msg-error\">An article with that title was already added. <a href=\"javascript:history.go(-1)\">Try again</a>.</div></div>\n";
-		echo "$pagecontainerstart";
-		echo "$pagecontainerend";
-		return;
-	}
-	
-	// do the photo upload work here
-	
-	$userpic = preg_replace("/[^A-Z0-9._-]/i", "_",strtolower(basename($_FILES['userpic']['name'])));
-	
-	// Was a new photo uploaded? If so, process, if not, ignore
-	
-	if($userpic != "") {
+	// lets get the team names for the event logging
 
-	// lets datestamp the file to help prevent overwrites
+	$awayteam = $db->QueryItem("SELECT TeamAbbrev FROM teams WHERE TeamID = '$awa'");
+	$hometeam = $db->QueryItem("SELECT TeamAbbrev FROM teams WHERE TeamID = '$hom'");
 
-	$picdate = date('Ymd_');
-	$userpic = $picdate.$userpic; 
+	// insert into schedule
 	
-	// additional file information
+	$db->Insert("
+		INSERT INTO schedule (
+			week, season, date1, date2, venue, league_id, awayteam, hometeam
+		) VALUES (
+			'$wee','$sea','$da1','$da2','$ven','$lid','$awa','$hom'
+		)
+	");
 
-	$uploadsize = $_FILES['userpic']['size'];
-	$uploadtype = $_FILES['userpic']['type'];
-	
-	// allowed files
-	
-	$filetype = exif_imagetype($_FILES["userpic"]["tmp_name"]);
-	$allowed = array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG);
-	
-	// destination directory 
-	
-	$target = "$sitepath/uploadphotos/history/"; 
-	$target = $target . $userpic;  
- 	
- 	// file is too big
- 	
-	if ($uploadsize > 3500000) { 
-		echo "<div class=\"msg-alerting\"><div class=\"msg-error\">That photo was too large. <a href=\"javascript:history.go(-1)\">Try again</a>.</div></div>\n";
-		echo "$pagecontainerstart";
-		echo "$pagecontainerend";
-		return; 
-	}
-	
-	// if not allowed file 
-	
-	if (!in_array($filetype, $allowed)) {
-		echo "<div class=\"msg-alerting\"><div class=\"msg-error\">Sorry! Only jpg, gif, png allowed. You uploaded a $uploadtype. <a href=\"javascript:history.go(-1)\">Try again</a>.</div></div>\n";
-		echo "$pagecontainerstart";
-		echo "$pagecontainerend";
-		return; 
-	}
- 
- 	// lets move the file
- 
-	if(move_uploaded_file($_FILES['userpic']['tmp_name'], $target)) { 
-		$ok = 1;
-	} else { 
-		$ok = 0;
-	} 
-	
-	} else {
-	
-	$userpic = "";
-	$ok = 1;
-	
-	}
-	
-	if($ok==1) { 
-	// query database
-
-	$db->Insert("INSERT INTO history (title,article,user,added,permalink,picture) VALUES ('$tit','$art','$sessemail',NOW(),'$per','$userpic')");
 		if ($db->a_rows != -1) {
 
 		// event logging
 		
 		$db->Insert("
 			INSERT INTO events (event_userid, event_date, event_type, event_module, event_objectid, event_associatedid, event_text) 
-			VALUES ($sessuseri, NOW(), '1', '7', LAST_INSERT_ID(), NULL, '$sessfname $sesslname added history article ''$tit''.')
+			VALUES ($sessuseri, NOW(), '1', '20', LAST_INSERT_ID(), NULL, '$sessfname $sesslname added schedule ''$awayteam'' v ''$hometeam''.')
 		");
 
-			echo "<div class=\"msg-alerting\"><div class=\"msg-ok\">You have successfully added a new article. <a href=\"main.php?SID=$SID&action=$action&do=sadd\">Add another</a> | <a href=\"main.php?SID=$SID&action=$action\">Back to list</a></div></div>\n";
+			echo "<div class=\"msg-alerting\"><div class=\"msg-ok\">You have successfully added a new schedule. <a href=\"main.php?SID=$SID&action=$action&do=sadd\">Add another</a> | <a href=\"main.php?SID=$SID&action=$action\">Back to list</a></div></div>\n";
 			echo "$pagecontainerstart";
 			echo "$pagecontainerend";	
 			
 		} else {
 		
-			echo "<div class=\"msg-alerting\"><div class=\"msg-error\">The article could not be added to the database at this time. <a href=\"main.php?SID=$SID&action=$action\">Back to list</a></div></div>\n";
+			echo "<div class=\"msg-alerting\"><div class=\"msg-error\">The schedule could not be added to the database at this time. <a href=\"main.php?SID=$SID&action=$action\">Back to list</a></div></div>\n";
 			echo "$pagecontainerstart";
 			echo "$pagecontainerend";			
 		}	
-		
-	} else {
-	
-			echo "<div class=\"msg-alerting\"><div class=\"msg-error\">There was an error uploading the image. Try again later. <a href=\"main.php?SID=$SID&action=$action\">Back to list</a></div></div>\n";
-			echo "$pagecontainerstart";
-			echo "$pagecontainerend";		
-	}
-
 }
 
 function delete_article_check($db)
