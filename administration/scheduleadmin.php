@@ -400,13 +400,13 @@ function add_article_form($db)
 
 	<div class="block">
 	<label>season [<span class="hint--top" data-hint="Select the season that this fixture belongs to. Every fixture must be associated with a season."><u>?</u></span>]</label>
-		<select name="type">
+		<select name="season">
 		<option value="">select season</option>
 		<option value="">---------------------</option>
 		<?php
 			// Get the clist of seasons
 			if ($db->Exists("SELECT SeasonID FROM seasons")) {
-				$db->Query("SELECT SeasonID, SeasonName FROM seasons ORDER BY SeasonName");
+				$db->Query("SELECT SeasonID, SeasonName FROM seasons ORDER BY SeasonName DESC");
 				for ($m=0; $m<$db->rows; $m++) {
 					$db->GetRow($m);
 					$sid = $db->data['SeasonID'];
@@ -426,7 +426,7 @@ function add_article_form($db)
 
 	<div class="block">
 	<label>date 2 [<span class="hint--top" data-hint="If required. Enter the last date that this multiple day fixture ends on."><u>?</u></span>]</label> 
-		<input type="text" name="date 2" maxlength="50">
+		<input type="text" name="date2" maxlength="50">
 	</div>
 
 	<div class="block">
@@ -569,7 +569,7 @@ function do_add_article($db)
 	
 	$db->Insert("
 		INSERT INTO schedule (
-			week, season, date1, date2, venue, league_id, awayteam, hometeam
+			week, season, date, date2, venue, league_id, awayteam, hometeam
 		) VALUES (
 			'$wee','$sea','$da1','$da2','$ven','$lid','$awa','$hom'
 		)
